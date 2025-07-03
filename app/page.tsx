@@ -1,28 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { RetroGrid } from "@/components/magicui/retro-grid";
-import Link from "next/link";
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import {
   Binoculars,
-  BrainCircuit,
+  BotMessageSquare,
+  Ellipsis,
   House,
   LogIn,
   Salad,
   Terminal,
-  ToolCase,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { AuroraText } from "@/components/magicui/aurora-text";
-import { TextAnimate } from "@/components/magicui/text-animate";
-import { Input } from "@/components/ui/input";
 import { WordRotate } from "@/components/magicui/word-rotate";
-import { cn } from "@/lib/utils";
-import { DotPattern } from "@/components/magicui/dot-pattern";
 export default function Home() {
-  const [input, setInput] = useState("");
-
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center">
       <div className="w-full min-h-screen flex items-center flex-col justify-center gap-16">
@@ -45,7 +36,7 @@ export default function Home() {
         </DockIcon>
         <Separator orientation="vertical" />
         <DockIcon>
-          <BrainCircuit />
+          <BotMessageSquare />
         </DockIcon>
         <DockIcon>
           <Terminal />
@@ -57,7 +48,7 @@ export default function Home() {
           <Binoculars />
         </DockIcon>
         <DockIcon>
-          <ToolCase />
+          <Ellipsis />
         </DockIcon>
         <Separator orientation="vertical" />
         <DockIcon>
