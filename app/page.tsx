@@ -7,7 +7,6 @@ import {
   Ellipsis,
   House,
   LogIn,
-  Salad,
   Terminal,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -26,7 +25,7 @@ export default function Home() {
           </AuroraText>
           <WordRotate
             className="text-5xl md:text-9xl font-bold"
-            words={["Chat", "Dev", "Health", "Research", "AI"]}
+            words={["Chat", "Dev", "Research", "AI"]}
           />
         </div>
       </div>
@@ -40,9 +39,6 @@ export default function Home() {
         </DockIcon>
         <DockIcon>
           <Terminal />
-        </DockIcon>
-        <DockIcon>
-          <Salad />
         </DockIcon>
         <DockIcon>
           <Binoculars />
