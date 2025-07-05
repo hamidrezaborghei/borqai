@@ -1,29 +1,30 @@
-import { tool } from "ai";
+import { tool, zodSchema } from "ai";
 import { z } from "zod";
 import { tavily } from "@tavily/core";
 
 export const extractWebContent = tool({
   description:
     "Extract detailed content from specific web pages or URLs for in-depth analysis. Use this tool when you need more detailed information from specific URLs, often after getting initial results from searchWeb.",
-  parameters: z.object({
-    urls: z.array(z.string()).describe("Array of URLs to extract content from"),
-    includeImages: z
-      .boolean()
-      .nullable()
-      .describe(
-        "Include a list of images extracted from the URLs in the response"
-      ),
-    extractDepth: z
-      .enum(["basic", "advanced"])
-      .nullable()
-      .describe(
-        "Extraction depth - basic (1 credit per 5 URLs) or advanced (2 credits per 5 URLs)"
-      ),
-    format: z
-      .enum(["markdown", "text"])
-      .nullable()
-      .describe("Output format - markdown or text"),
-  }),
+  parameters: zodSchema(
+    z.object({
+      urls: z
+        .array(z.string())
+        .describe("Array of URLs to extract content from"),
+      includeImages: z
+        .union([z.boolean().refine(() => true), z.null()])
+        .describe(
+          "Include a list of images extracted from the URLs in the response"
+        ),
+      extractDepth: z
+        .union([z.enum(["basic", "advanced"]).refine(() => true), z.null()])
+        .describe(
+          "Extraction depth - basic (1 credit per 5 URLs) or advanced (2 credits per 5 URLs)"
+        ),
+      format: z
+        .union([z.enum(["markdown", "text"]).refine(() => true), z.null()])
+        .describe("Output format - markdown or text"),
+    })
+  ),
   execute: async ({
     urls,
     includeImages,

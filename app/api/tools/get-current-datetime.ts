@@ -1,23 +1,26 @@
-import { tool } from "ai";
+import { tool, zodSchema } from "ai";
 import { z } from "zod";
 
 export const getCurrentDateTime = tool({
   description:
     "Get the current date and time. Use this when the user asks for the current time, date, or wants to know what time it is now.",
-  parameters: z.object({
-    timezone: z
-      .string()
-      .nullable()
-      .describe(
-        "Optional timezone (e.g., 'America/New_York', 'Europe/London'). If not provided, uses local server time."
-      ),
-    format: z
-      .enum(["full", "date", "time", "iso"])
-      .nullable()
-      .describe(
-        "Output format: 'full' (date and time), 'date' (date only), 'time' (time only), 'iso' (ISO string). Default: 'full'"
-      ),
-  }),
+  parameters: zodSchema(
+    z.object({
+      timezone: z
+        .union([z.string().refine(() => true), z.null()])
+        .describe(
+          "Optional timezone (e.g., 'America/New_York', 'Europe/London'). If not provided, uses local server time."
+        ),
+      format: z
+        .union([
+          z.enum(["full", "date", "time", "iso"]).refine(() => true),
+          z.null(),
+        ])
+        .describe(
+          "Output format: 'full' (date and time), 'date' (date only), 'time' (time only), 'iso' (ISO string). Default: 'full'"
+        ),
+    })
+  ),
   execute: async ({ timezone, format = "full" }) => {
     try {
       const now = new Date();

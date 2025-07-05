@@ -1,255 +1,278 @@
-import { tool } from "ai";
+import { tool, zodSchema } from "ai";
 import { z } from "zod";
 import { tavily } from "@tavily/core";
 
 export const searchWeb = tool({
   description:
     "Search the web for current information, news, or any topic you need to research. Use this when you need up-to-date information. After getting search results, you can use extractWebContent to get more detailed information from specific URLs if needed.",
-  parameters: z.object({
-    query: z.string().describe("The search query to find relevant information"),
-    autoParameters: z
-      .boolean()
-      .nullable()
-      .describe(
-        "When enabled, Tavily automatically configures search parameters based on your query's content and intent"
-      ),
-    topic: z
-      .enum(["general", "news"])
-      .nullable()
-      .describe(
-        "The category of the search. 'news' is useful for retrieving real-time updates, 'general' is for broader searches"
-      ),
-    searchDepth: z
-      .enum(["basic", "advanced"])
-      .nullable()
-      .describe("Search depth - basic (1 credit) or advanced (2 credits)"),
-    chunksPerSource: z
-      .number()
-      .min(1)
-      .max(3)
-      .nullable()
-      .describe(
-        "Maximum number of relevant chunks returned per source (only for advanced search)"
-      ),
-    maxResults: z
-      .number()
-      .min(0)
-      .max(20)
-      .nullable()
-      .describe("Maximum number of search results"),
-    timeRange: z
-      .enum(["day", "week", "month", "year", "d", "w", "m", "y"])
-      .nullable()
-      .describe("Time range back from current date to filter results"),
-    days: z
-      .number()
-      .min(1)
-      .nullable()
-      .describe("Number of days back from current date (only for news topic)"),
-    includeAnswer: z
-      .union([z.boolean(), z.enum(["basic", "advanced"])])
-      .nullable()
-      .describe(
-        "Include LLM-generated answer: true/basic for quick answer, advanced for detailed answer"
-      ),
-    includeRawContent: z
-      .union([z.boolean(), z.enum(["markdown", "text"])])
-      .nullable()
-      .describe(
-        "Include cleaned HTML content: true/markdown for markdown format, text for plain text"
-      ),
-    includeImages: z
-      .boolean()
-      .nullable()
-      .describe("Also perform image search and include results"),
-    includeImageDescriptions: z
-      .boolean()
-      .nullable()
-      .describe(
-        "Add descriptive text for each image when includeImages is true"
-      ),
-    includeDomains: z
-      .array(z.string())
-      .nullable()
-      .describe("List of domains to specifically include in search results"),
-    excludeDomains: z
-      .array(z.string())
-      .nullable()
-      .describe("List of domains to specifically exclude from search results"),
-    country: z
-      .enum([
-        "afghanistan",
-        "albania",
-        "algeria",
-        "andorra",
-        "angola",
-        "argentina",
-        "armenia",
-        "australia",
-        "austria",
-        "azerbaijan",
-        "bahamas",
-        "bahrain",
-        "bangladesh",
-        "barbados",
-        "belarus",
-        "belgium",
-        "belize",
-        "benin",
-        "bhutan",
-        "bolivia",
-        "bosnia and herzegovina",
-        "botswana",
-        "brazil",
-        "brunei",
-        "bulgaria",
-        "burkina faso",
-        "burundi",
-        "cambodia",
-        "cameroon",
-        "canada",
-        "cape verde",
-        "central african republic",
-        "chad",
-        "chile",
-        "china",
-        "colombia",
-        "comoros",
-        "congo",
-        "costa rica",
-        "croatia",
-        "cuba",
-        "cyprus",
-        "czech republic",
-        "denmark",
-        "djibouti",
-        "dominican republic",
-        "ecuador",
-        "egypt",
-        "el salvador",
-        "equatorial guinea",
-        "eritrea",
-        "estonia",
-        "ethiopia",
-        "fiji",
-        "finland",
-        "france",
-        "gabon",
-        "gambia",
-        "georgia",
-        "germany",
-        "ghana",
-        "greece",
-        "guatemala",
-        "guinea",
-        "haiti",
-        "honduras",
-        "hungary",
-        "iceland",
-        "india",
-        "indonesia",
-        "iran",
-        "iraq",
-        "ireland",
-        "israel",
-        "italy",
-        "jamaica",
-        "japan",
-        "jordan",
-        "kazakhstan",
-        "kenya",
-        "kuwait",
-        "kyrgyzstan",
-        "latvia",
-        "lebanon",
-        "lesotho",
-        "liberia",
-        "libya",
-        "liechtenstein",
-        "lithuania",
-        "luxembourg",
-        "madagascar",
-        "malawi",
-        "malaysia",
-        "maldives",
-        "mali",
-        "malta",
-        "mauritania",
-        "mauritius",
-        "mexico",
-        "moldova",
-        "monaco",
-        "mongolia",
-        "montenegro",
-        "morocco",
-        "mozambique",
-        "myanmar",
-        "namibia",
-        "nepal",
-        "netherlands",
-        "new zealand",
-        "nicaragua",
-        "niger",
-        "nigeria",
-        "north korea",
-        "north macedonia",
-        "norway",
-        "oman",
-        "pakistan",
-        "panama",
-        "papua new guinea",
-        "paraguay",
-        "peru",
-        "philippines",
-        "poland",
-        "portugal",
-        "qatar",
-        "romania",
-        "russia",
-        "rwanda",
-        "saudi arabia",
-        "senegal",
-        "serbia",
-        "singapore",
-        "slovakia",
-        "slovenia",
-        "somalia",
-        "south africa",
-        "south korea",
-        "south sudan",
-        "spain",
-        "sri lanka",
-        "sudan",
-        "sweden",
-        "switzerland",
-        "syria",
-        "taiwan",
-        "tajikistan",
-        "tanzania",
-        "thailand",
-        "togo",
-        "trinidad and tobago",
-        "tunisia",
-        "turkey",
-        "turkmenistan",
-        "uganda",
-        "ukraine",
-        "united arab emirates",
-        "united kingdom",
-        "united states",
-        "uruguay",
-        "uzbekistan",
-        "venezuela",
-        "vietnam",
-        "yemen",
-        "zambia",
-        "zimbabwe",
-      ])
-      .nullable()
-      .describe(
-        "Boost search results from a specific country (only for general topic)"
-      ),
-  }),
+  parameters: zodSchema(
+    z.object({
+      query: z
+        .string()
+        .describe("The search query to find relevant information"),
+      autoParameters: z
+        .union([z.boolean().refine(() => true), z.null()])
+        .describe(
+          "When enabled, Tavily automatically configures search parameters based on your query's content and intent"
+        ),
+      topic: z
+        .union([z.enum(["general", "news"]).refine(() => true), z.null()])
+        .describe(
+          "The category of the search. 'news' is useful for retrieving real-time updates, 'general' is for broader searches"
+        ),
+      searchDepth: z
+        .union([z.enum(["basic", "advanced"]).refine(() => true), z.null()])
+        .describe("Search depth - basic (1 credit) or advanced (2 credits)"),
+      chunksPerSource: z
+        .union([
+          z
+            .number()
+            .min(1)
+            .max(3)
+            .refine(() => true),
+          z.null(),
+        ])
+        .describe(
+          "Maximum number of relevant chunks returned per source (only for advanced search)"
+        ),
+      maxResults: z
+        .union([
+          z
+            .number()
+            .min(0)
+            .max(20)
+            .refine(() => true),
+          z.null(),
+        ])
+        .describe("Maximum number of search results"),
+      timeRange: z
+        .union([
+          z.enum(["day", "week", "month", "year", "d", "w", "m", "y"]),
+          z.null(),
+        ])
+        .describe("Time range back from current date to filter results"),
+      days: z
+        .union([
+          z
+            .number()
+            .min(1)
+            .refine(() => true),
+          z.null(),
+        ])
+        .describe(
+          "Number of days back from current date (only for news topic)"
+        ),
+      includeAnswer: z
+        .union([
+          z.union([z.boolean(), z.enum(["basic", "advanced"])]),
+          z.null(),
+        ])
+        .describe(
+          "Include LLM-generated answer: true/basic for quick answer, advanced for detailed answer"
+        ),
+      includeRawContent: z
+        .union([
+          z
+            .union([z.boolean(), z.enum(["markdown", "text"])])
+            .refine(() => true),
+          z.null(),
+        ])
+        .describe(
+          "Include cleaned HTML content: true/markdown for markdown format, text for plain text"
+        ),
+      includeImages: z
+        .union([z.boolean().refine(() => true), z.null()])
+        .describe("Also perform image search and include results"),
+      includeImageDescriptions: z
+        .union([z.boolean().refine(() => true), z.null()])
+        .describe(
+          "Add descriptive text for each image when includeImages is true"
+        ),
+      includeDomains: z
+        .union([z.array(z.string()).refine(() => true), z.null()])
+        .describe("List of domains to specifically include in search results"),
+      excludeDomains: z
+        .union([z.array(z.string()).refine(() => true), z.null()])
+        .describe(
+          "List of domains to specifically exclude from search results"
+        ),
+      country: z
+        .union([
+          z.enum([
+            "afghanistan",
+            "albania",
+            "algeria",
+            "andorra",
+            "angola",
+            "argentina",
+            "armenia",
+            "australia",
+            "austria",
+            "azerbaijan",
+            "bahamas",
+            "bahrain",
+            "bangladesh",
+            "barbados",
+            "belarus",
+            "belgium",
+            "belize",
+            "benin",
+            "bhutan",
+            "bolivia",
+            "bosnia and herzegovina",
+            "botswana",
+            "brazil",
+            "brunei",
+            "bulgaria",
+            "burkina faso",
+            "burundi",
+            "cambodia",
+            "cameroon",
+            "canada",
+            "cape verde",
+            "central african republic",
+            "chad",
+            "chile",
+            "china",
+            "colombia",
+            "comoros",
+            "congo",
+            "costa rica",
+            "croatia",
+            "cuba",
+            "cyprus",
+            "czech republic",
+            "denmark",
+            "djibouti",
+            "dominican republic",
+            "ecuador",
+            "egypt",
+            "el salvador",
+            "equatorial guinea",
+            "eritrea",
+            "estonia",
+            "ethiopia",
+            "fiji",
+            "finland",
+            "france",
+            "gabon",
+            "gambia",
+            "georgia",
+            "germany",
+            "ghana",
+            "greece",
+            "guatemala",
+            "guinea",
+            "haiti",
+            "honduras",
+            "hungary",
+            "iceland",
+            "india",
+            "indonesia",
+            "iran",
+            "iraq",
+            "ireland",
+            "israel",
+            "italy",
+            "jamaica",
+            "japan",
+            "jordan",
+            "kazakhstan",
+            "kenya",
+            "kuwait",
+            "kyrgyzstan",
+            "latvia",
+            "lebanon",
+            "lesotho",
+            "liberia",
+            "libya",
+            "liechtenstein",
+            "lithuania",
+            "luxembourg",
+            "madagascar",
+            "malawi",
+            "malaysia",
+            "maldives",
+            "mali",
+            "malta",
+            "mauritania",
+            "mauritius",
+            "mexico",
+            "moldova",
+            "monaco",
+            "mongolia",
+            "montenegro",
+            "morocco",
+            "mozambique",
+            "myanmar",
+            "namibia",
+            "nepal",
+            "netherlands",
+            "new zealand",
+            "nicaragua",
+            "niger",
+            "nigeria",
+            "north korea",
+            "north macedonia",
+            "norway",
+            "oman",
+            "pakistan",
+            "panama",
+            "papua new guinea",
+            "paraguay",
+            "peru",
+            "philippines",
+            "poland",
+            "portugal",
+            "qatar",
+            "romania",
+            "russia",
+            "rwanda",
+            "saudi arabia",
+            "senegal",
+            "serbia",
+            "singapore",
+            "slovakia",
+            "slovenia",
+            "somalia",
+            "south africa",
+            "south korea",
+            "south sudan",
+            "spain",
+            "sri lanka",
+            "sudan",
+            "sweden",
+            "switzerland",
+            "syria",
+            "taiwan",
+            "tajikistan",
+            "tanzania",
+            "thailand",
+            "togo",
+            "trinidad and tobago",
+            "tunisia",
+            "turkey",
+            "turkmenistan",
+            "uganda",
+            "ukraine",
+            "united arab emirates",
+            "united kingdom",
+            "united states",
+            "uruguay",
+            "uzbekistan",
+            "venezuela",
+            "vietnam",
+            "yemen",
+            "zambia",
+            "zimbabwe",
+          ]),
+          z.null(),
+        ])
+        .describe(
+          "Boost search results from a specific country (only for general topic)"
+        ),
+    })
+  ),
   execute: async ({
     query,
     autoParameters,

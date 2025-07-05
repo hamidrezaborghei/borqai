@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText, tool, generateText } from "ai";
+import { streamText, tool, generateText, zodSchema } from "ai";
 import { z } from "zod";
 import { searchWeb } from "../tools/search-web";
 import { extractWebContent } from "../tools/extract-web-content";
@@ -56,27 +56,35 @@ let researchState: ResearchState | null = null;
 const manageResearchState = tool({
   description:
     "Manage the research state, track findings, and determine when axioms are reached",
-  parameters: z.object({
-    action: z.enum([
-      "initialize",
-      "addFinding",
-      "addQuestions",
-      "markAxiom",
-      "checkCompletion",
-    ]),
-    data: z
-      .object({
-        query: z.string().nullable(),
-        maxDepth: z.number().nullable(),
-        breadth: z.number().nullable(),
-        content: z.string().nullable(),
-        source: z.string().nullable(),
-        followUpQuestions: z.array(z.string()).nullable(),
-        questions: z.array(z.string()).nullable(),
-        axiom: z.string().nullable(),
-      })
-      .nullable(),
-  }),
+  parameters: zodSchema(
+    z.object({
+      action: z.enum([
+        "initialize",
+        "addFinding",
+        "addQuestions",
+        "markAxiom",
+        "checkCompletion",
+      ]),
+      data: z
+        .object({
+          query: z.union([z.string().refine(() => true), z.null()]),
+          maxDepth: z.union([z.number().refine(() => true), z.null()]),
+          breadth: z.union([z.number().refine(() => true), z.null()]),
+          content: z.union([z.string().refine(() => true), z.null()]),
+          source: z.union([z.string().refine(() => true), z.null()]),
+          followUpQuestions: z.union([
+            z.array(z.string()).refine(() => true),
+            z.null(),
+          ]),
+          questions: z.union([
+            z.array(z.string()).refine(() => true),
+            z.null(),
+          ]),
+          axiom: z.union([z.string().refine(() => true), z.null()]),
+        })
+        .nullable(),
+    })
+  ),
   execute: async ({ action, data }) => {
     switch (action) {
       case "initialize":
@@ -179,13 +187,15 @@ const manageResearchState = tool({
 const generateFollowUpQuestions = tool({
   description:
     "Generate intelligent follow-up questions based on research findings to dig deeper",
-  parameters: z.object({
-    content: z
-      .string()
-      .describe("The content to analyze for follow-up questions"),
-    currentQuery: z.string().describe("The current research query"),
-    depth: z.number().describe("Current research depth"),
-  }),
+  parameters: zodSchema(
+    z.object({
+      content: z
+        .string()
+        .describe("The content to analyze for follow-up questions"),
+      currentQuery: z.string().describe("The current research query"),
+      depth: z.number().describe("Current research depth"),
+    })
+  ),
   execute: async ({ content, currentQuery, depth }) => {
     // Use AI to generate intelligent follow-up questions
     const questionPrompt = `
@@ -231,10 +241,12 @@ Return only the questions, one per line.
 const identifyAxioms = tool({
   description:
     "Analyze research content to identify fundamental axioms, principles, or irreducible truths",
-  parameters: z.object({
-    content: z.string().describe("The research content to analyze"),
-    query: z.string().describe("The research query context"),
-  }),
+  parameters: zodSchema(
+    z.object({
+      content: z.string().describe("The research content to analyze"),
+      query: z.string().describe("The research query context"),
+    })
+  ),
   execute: async ({ content, query }) => {
     const axiomPrompt = `
 Analyze this research content about "${query}" and identify any fundamental axioms, principles, or irreducible truths.
@@ -282,9 +294,11 @@ If you find axioms, list them clearly. If not, return "No axioms identified."
 const saveKnowledgeFile = tool({
   description:
     "Save all research findings to a .knowledge file for use by other agents",
-  parameters: z.object({
-    filename: z.string().describe("The filename for the knowledge file"),
-  }),
+  parameters: zodSchema(
+    z.object({
+      filename: z.string().describe("The filename for the knowledge file"),
+    })
+  ),
   execute: async ({ filename }) => {
     if (!researchState) return "No research state to save";
 
@@ -321,9 +335,11 @@ const saveKnowledgeFile = tool({
 // Tool for generating PDF report
 const generatePDFReport = tool({
   description: "Generate a comprehensive PDF report of all research findings",
-  parameters: z.object({
-    filename: z.string().describe("The filename for the PDF report"),
-  }),
+  parameters: zodSchema(
+    z.object({
+      filename: z.string().describe("The filename for the PDF report"),
+    })
+  ),
   execute: async ({ filename }) => {
     if (!researchState) return "No research state to generate report";
 

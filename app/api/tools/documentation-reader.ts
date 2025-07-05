@@ -1,4 +1,4 @@
-import { tool } from "ai";
+import { tool, zodSchema } from "ai";
 import { z } from "zod";
 import { experimental_createMCPClient } from "ai";
 
@@ -21,13 +21,15 @@ async function createContext7Client() {
 export const resolveLibraryId = tool({
   description:
     "Resolves a package/product name to a Context7-compatible library ID and returns a list of matching libraries.",
-  parameters: z.object({
-    libraryName: z
-      .string()
-      .describe(
-        "Library name to search for and retrieve a Context7-compatible library ID."
-      ),
-  }),
+  parameters: zodSchema(
+    z.object({
+      libraryName: z
+        .string()
+        .describe(
+          "Library name to search for and retrieve a Context7-compatible library ID."
+        ),
+    })
+  ),
   execute: async ({ libraryName }) => {
     let client;
     try {
@@ -63,23 +65,25 @@ export const resolveLibraryId = tool({
 export const getLibraryDocs = tool({
   description:
     "Fetches up-to-date documentation for a library. You must call 'resolve-library-id' first to obtain the exact Context7-compatible library ID required to use this tool.",
-  parameters: z.object({
-    context7CompatibleLibraryID: z
-      .string()
-      .describe(
-        "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
-      ),
-    topic: z
-      .string()
-      .nullable()
-      .describe("Topic to focus documentation on (e.g., 'hooks', 'routing')."),
-    tokens: z
-      .number()
-      .nullable()
-      .describe(
-        "Maximum number of tokens of documentation to retrieve (default: 10000). Higher values provide more context but consume more tokens."
-      ),
-  }),
+  parameters: zodSchema(
+    z.object({
+      context7CompatibleLibraryID: z
+        .string()
+        .describe(
+          "Exact Context7-compatible library ID (e.g., '/mongodb/docs', '/vercel/next.js', '/supabase/supabase') retrieved from 'resolve-library-id' or directly from user query in the format '/org/project' or '/org/project/version'."
+        ),
+      topic: z
+        .union([z.string().refine(() => true), z.null()])
+        .describe(
+          "Topic to focus documentation on (e.g., 'hooks', 'routing')."
+        ),
+      tokens: z
+        .union([z.number().refine(() => true), z.null()])
+        .describe(
+          "Maximum number of tokens of documentation to retrieve (default: 10000). Higher values provide more context but consume more tokens."
+        ),
+    })
+  ),
   execute: async ({ context7CompatibleLibraryID, topic, tokens }) => {
     let client;
     try {

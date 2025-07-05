@@ -684,7 +684,7 @@ export default function ResearchPage() {
           {researchSessions.length === 0 ? (
             <div className="h-full flex items-center justify-center">
               <div className="text-center max-w-md">
-                <Brain className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                {/* <Brain className="h-16 w-16 text-muted-foreground mx-auto mb-4" /> */}
                 <h3 className="text-lg font-semibold mb-2">
                   Start Deep Research
                 </h3>
