@@ -1,0 +1,411 @@
+{
+  "metadata": {
+    "rootQuery": "\"What are the key design considerations and technological requirements for developing a real-time virtual try-on system optimized for low-performance CPUs and GPUs on mobile devices?\"",
+    "timestamp": "2025-07-06T01:22:12.423Z",
+    "totalNodes": 33,
+    "totalAxioms": 4,
+    "maxDepth": 5,
+    "completed": false,
+    "researchType": "hierarchical_concept_analysis"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "id": "root",
+        "name": "Research Root",
+        "query": "\"What are the key design considerations and technological requirements for developing a real-time virtual try-on system optimized for low-performance CPUs and GPUs on mobile devices?\"",
+        "isAxiom": false,
+        "depth": 0,
+        "children": [
+          "root-child-0",
+          "root-child-1",
+          "root-child-2",
+          "root-child-3"
+        ],
+        "timestamp": "2025-07-06T01:17:52.915Z"
+      },
+      {
+        "id": "root-child-0",
+        "name": "Virtual try-on core components",
+        "query": "Virtual try-on core components",
+        "isAxiom": false,
+        "depth": 1,
+        "parent": "root",
+        "children": [
+          "root-child-0-child-0",
+          "root-child-0-child-1",
+          "root-child-0-child-2",
+          "root-child-0-child-3"
+        ],
+        "timestamp": "2025-07-06T01:17:56.150Z"
+      },
+      {
+        "id": "root-child-1",
+        "name": "Resource optimization strategies",
+        "query": "Resource optimization strategies",
+        "isAxiom": false,
+        "depth": 1,
+        "parent": "root",
+        "children": [
+          "root-child-1-child-0",
+          "root-child-1-child-1",
+          "root-child-1-child-2",
+          "root-child-1-child-3"
+        ],
+        "timestamp": "2025-07-06T01:17:56.150Z"
+      },
+      {
+        "id": "root-child-2",
+        "name": "Lightweight inference techniques",
+        "query": "Lightweight inference techniques",
+        "isAxiom": false,
+        "depth": 1,
+        "parent": "root",
+        "children": [],
+        "timestamp": "2025-07-06T01:17:56.150Z"
+      },
+      {
+        "id": "root-child-3",
+        "name": "Mobile device constraints",
+        "query": "Mobile device constraints",
+        "isAxiom": false,
+        "depth": 1,
+        "parent": "root",
+        "children": [],
+        "timestamp": "2025-07-06T01:17:56.150Z"
+      },
+      {
+        "id": "root-child-0-child-0",
+        "name": "3D modeling techniques",
+        "query": "3D modeling techniques",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-0",
+        "children": [
+          "root-child-0-child-0-child-0",
+          "root-child-0-child-0-child-1",
+          "root-child-0-child-0-child-2",
+          "root-child-0-child-0-child-3"
+        ],
+        "timestamp": "2025-07-06T01:18:09.248Z"
+      },
+      {
+        "id": "root-child-0-child-1",
+        "name": "Real-time rendering algorithms",
+        "query": "Real-time rendering algorithms",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-0",
+        "children": [
+          "root-child-0-child-1-child-0",
+          "root-child-0-child-1-child-1",
+          "root-child-0-child-1-child-2",
+          "root-child-0-child-1-child-3"
+        ],
+        "timestamp": "2025-07-06T01:18:09.248Z"
+      },
+      {
+        "id": "root-child-0-child-2",
+        "name": "User interface design for virtual try-on",
+        "query": "User interface design for virtual try-on",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:09.248Z"
+      },
+      {
+        "id": "root-child-0-child-3",
+        "name": "Optimization methods for low-resource devices",
+        "query": "Optimization methods for low-resource devices",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:09.248Z"
+      },
+      {
+        "id": "root-child-0-child-0-child-0",
+        "name": "3D modeling software",
+        "query": "3D modeling software",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:23.196Z"
+      },
+      {
+        "id": "root-child-0-child-0-child-1",
+        "name": "Rendering techniques",
+        "query": "Rendering techniques",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:23.196Z"
+      },
+      {
+        "id": "root-child-0-child-0-child-2",
+        "name": "Texturing methods",
+        "query": "Texturing methods",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:23.196Z"
+      },
+      {
+        "id": "root-child-0-child-0-child-3",
+        "name": "Animation principles",
+        "query": "Animation principles",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:18:23.196Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0",
+        "name": "Rasterization",
+        "query": "Rasterization",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-1",
+        "children": [
+          "root-child-0-child-1-child-0-child-0",
+          "root-child-0-child-1-child-0-child-1",
+          "root-child-0-child-1-child-0-child-2",
+          "root-child-0-child-1-child-0-child-3"
+        ],
+        "timestamp": "2025-07-06T01:19:42.841Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-1",
+        "name": "Ray Tracing",
+        "query": "Ray Tracing",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:42.841Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-2",
+        "name": "Shader Programming",
+        "query": "Shader Programming",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:42.841Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-3",
+        "name": "Culling and Level-of-Detail",
+        "query": "Culling and Level-of-Detail",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-0-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:42.841Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-0",
+        "name": "Raster graphics",
+        "query": "Raster graphics",
+        "isAxiom": false,
+        "depth": 4,
+        "parent": "root-child-0-child-1-child-0",
+        "children": [
+          "root-child-0-child-1-child-0-child-0-child-0",
+          "root-child-0-child-1-child-0-child-0-child-1",
+          "root-child-0-child-1-child-0-child-0-child-2",
+          "root-child-0-child-1-child-0-child-0-child-3"
+        ],
+        "timestamp": "2025-07-06T01:19:56.151Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-1",
+        "name": "Pixel representation",
+        "query": "Pixel representation",
+        "isAxiom": false,
+        "depth": 4,
+        "parent": "root-child-0-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:56.151Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-2",
+        "name": "Scanline rendering",
+        "query": "Scanline rendering",
+        "isAxiom": false,
+        "depth": 4,
+        "parent": "root-child-0-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:56.151Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-3",
+        "name": "Anti-aliasing techniques",
+        "query": "Anti-aliasing techniques",
+        "isAxiom": false,
+        "depth": 4,
+        "parent": "root-child-0-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:19:56.151Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-0-child-0",
+        "name": "Pixel representation",
+        "query": "Pixel representation",
+        "isAxiom": true,
+        "content": "Pixel representation: Fundamental definition of pixel as the smallest display unit representing color.",
+        "depth": 5,
+        "parent": "root-child-0-child-1-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:20:34.955Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-0-child-1",
+        "name": "Color depth",
+        "query": "Color depth",
+        "isAxiom": true,
+        "content": "Color depth: Number of bits used to represent color of a single pixel.",
+        "depth": 5,
+        "parent": "root-child-0-child-1-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:20:34.955Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-0-child-2",
+        "name": "Image resolution",
+        "query": "Image resolution",
+        "isAxiom": true,
+        "content": "Image resolution: The number of pixels in each dimension that can be displayed.",
+        "depth": 5,
+        "parent": "root-child-0-child-1-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:20:34.955Z"
+      },
+      {
+        "id": "root-child-0-child-1-child-0-child-0-child-3",
+        "name": "Rasterization techniques",
+        "query": "Rasterization techniques",
+        "isAxiom": true,
+        "content": "Rasterization techniques: Methods to convert vector graphics into raster images.",
+        "depth": 5,
+        "parent": "root-child-0-child-1-child-0-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:20:34.955Z"
+      },
+      {
+        "id": "root-child-1-child-0",
+        "name": "Resource allocation techniques",
+        "query": "Resource allocation techniques",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-1",
+        "children": [
+          "root-child-1-child-0-child-0",
+          "root-child-1-child-0-child-1",
+          "root-child-1-child-0-child-2",
+          "root-child-1-child-0-child-3"
+        ],
+        "timestamp": "2025-07-06T01:21:22.130Z"
+      },
+      {
+        "id": "root-child-1-child-1",
+        "name": "Computational efficiency methods",
+        "query": "Computational efficiency methods",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:22.130Z"
+      },
+      {
+        "id": "root-child-1-child-2",
+        "name": "User experience enhancement strategies",
+        "query": "User experience enhancement strategies",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:22.130Z"
+      },
+      {
+        "id": "root-child-1-child-3",
+        "name": "Data management practices",
+        "query": "Data management practices",
+        "isAxiom": false,
+        "depth": 2,
+        "parent": "root-child-1",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:22.130Z"
+      },
+      {
+        "id": "root-child-1-child-0-child-0",
+        "name": "Resource allocation models",
+        "query": "Resource allocation models",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:33.856Z"
+      },
+      {
+        "id": "root-child-1-child-0-child-1",
+        "name": "Optimization algorithms",
+        "query": "Optimization algorithms",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:33.856Z"
+      },
+      {
+        "id": "root-child-1-child-0-child-2",
+        "name": "Cost-benefit analysis",
+        "query": "Cost-benefit analysis",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:33.856Z"
+      },
+      {
+        "id": "root-child-1-child-0-child-3",
+        "name": "Decision-making frameworks",
+        "query": "Decision-making frameworks",
+        "isAxiom": false,
+        "depth": 3,
+        "parent": "root-child-1-child-0",
+        "children": [],
+        "timestamp": "2025-07-06T01:21:33.856Z"
+      }
+    ]
+  },
+  "axioms": [
+    {
+      "concept": "Pixel representation",
+      "axiom": "Pixel representation: Fundamental definition of pixel as the smallest display unit representing color.",
+      "depth": 5
+    },
+    {
+      "concept": "Color depth",
+      "axiom": "Color depth: Number of bits used to represent color of a single pixel.",
+      "depth": 5
+    },
+    {
+      "concept": "Image resolution",
+      "axiom": "Image resolution: The number of pixels in each dimension that can be displayed.",
+      "depth": 5
+    },
+    {
+      "concept": "Rasterization techniques",
+      "axiom": "Rasterization techniques: Methods to convert vector graphics into raster images.",
+      "depth": 5
+    }
+  ],
+  "summary": "Hierarchical research on \"\"What are the key design considerations and technological requirements for developing a real-time virtual try-on system optimized for low-performance CPUs and GPUs on mobile devices?\"\" completed with 4 axioms discovered across 33 concept nodes."
+}
