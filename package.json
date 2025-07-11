@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.3.22",
-    "@ai-sdk/react": "^1.2.12",
+    "@ai-sdk/openai": "^2.0.0-beta.6",
+    "@ai-sdk/react": "^2.0.0-beta.14",
     "@dagrejs/dagre": "^1.1.5",
     "@fontsource/poppins": "^5.2.6",
     "@fontsource/vazirmatn": "^5.2.6",
@@ -22,7 +22,7 @@
     "@tavily/core": "^0.5.9",
     "@types/pdfkit": "^0.14.0",
     "@xyflow/react": "^12.8.1",
-    "ai": "^4.3.16",
+    "ai": "^5.0.0-beta.14",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",

@@ -1,25 +1,18 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  ArrowUp,
-  Info,
-  Loader2,
-  Mic,
-  Paperclip,
-  Square,
-  X,
-} from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { ArrowUp, Mic, Paperclip, Square } from "lucide-react";
 import { omit } from "remeda";
 
 import { cn } from "@/lib/utils";
 import { useAudioRecording } from "@/hooks/use-audio-recording";
 import { useAutosizeTextArea } from "@/hooks/use-autosize-textarea";
-import { AudioVisualizer } from "@/components/ui/audio-visualizer";
-import { Button } from "@/components/ui/button";
-import { FilePreview } from "@/components/ui/file-preview";
-import { InterruptPrompt } from "@/components/ui/interrupt-prompt";
+import { Button } from "@/components/ui/base/button";
+import { FilePreview } from "@/components/features/chat/file-preview";
+import { InterruptPrompt } from "@/components/features/chat/interrupt-prompt";
+import { FileUploadOverlay } from "./file-upload-overlay";
+import { RecordingPrompt, RecordingControls } from "./recording-controls";
 
 interface MessageInputBaseProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -70,7 +63,15 @@ export function MessageInput({
   } = useAudioRecording({
     transcribeAudio,
     onTranscriptionComplete: (text) => {
-      props.onChange?.({ target: { value: text } } as any);
+      if (props.onChange && textAreaRef.current) {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLTextAreaElement.prototype,
+          "value"
+        )?.set;
+        nativeInputValueSetter?.call(textAreaRef.current, text);
+        const event = new Event("input", { bubbles: true });
+        textAreaRef.current.dispatchEvent(event);
+      }
     },
   });
 
@@ -80,35 +81,31 @@ export function MessageInput({
     }
   }, [isGenerating]);
 
+  // File handling
   const addFiles = (files: File[] | null) => {
     if (props.allowAttachments) {
       props.setFiles((currentFiles) => {
-        if (currentFiles === null) {
-          return files;
-        }
-
-        if (files === null) {
-          return currentFiles;
-        }
-
+        if (currentFiles === null) return files;
+        if (files === null) return currentFiles;
         return [...currentFiles, ...files];
       });
     }
   };
 
-  const onDragOver = (event: React.DragEvent) => {
+  // Drag and drop handlers
+  const handleDragOver = (event: React.DragEvent) => {
     if (props.allowAttachments !== true) return;
     event.preventDefault();
     setIsDragging(true);
   };
 
-  const onDragLeave = (event: React.DragEvent) => {
+  const handleDragLeave = (event: React.DragEvent) => {
     if (props.allowAttachments !== true) return;
     event.preventDefault();
     setIsDragging(false);
   };
 
-  const onDrop = (event: React.DragEvent) => {
+  const handleDrop = (event: React.DragEvent) => {
     setIsDragging(false);
     if (props.allowAttachments !== true) return;
     event.preventDefault();
@@ -118,7 +115,8 @@ export function MessageInput({
     }
   };
 
-  const onPaste = (event: React.ClipboardEvent) => {
+  // Paste handler
+  const handlePaste = (event: React.ClipboardEvent) => {
     const items = event.clipboardData?.items;
     if (!items) return;
 
@@ -143,7 +141,8 @@ export function MessageInput({
     }
   };
 
-  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  // Keyboard handler
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (submitOnEnter && event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
 
@@ -180,18 +179,37 @@ export function MessageInput({
     props.allowAttachments && props.files && props.files.length > 0;
 
   useAutosizeTextArea({
-    ref: textAreaRef,
+    ref: textAreaRef as React.RefObject<HTMLTextAreaElement>,
     maxHeight: 240,
     borderWidth: 1,
     dependencies: [props.value, showFileList],
   });
 
+  const showFileUploadDialog = async () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.accept = "*/*";
+    input.click();
+
+    return new Promise<File[] | null>((resolve) => {
+      input.onchange = (e) => {
+        const files = (e.currentTarget as HTMLInputElement).files;
+        if (files) {
+          resolve(Array.from(files));
+          return;
+        }
+        resolve(null);
+      };
+    });
+  };
+
   return (
     <div
       className="relative flex w-full"
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
-      onDrop={onDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
     >
       {enableInterrupt && (
         <InterruptPrompt
@@ -211,8 +229,8 @@ export function MessageInput({
             aria-label="Write your prompt here"
             placeholder={placeholder}
             ref={textAreaRef}
-            onPaste={onPaste}
-            onKeyDown={onKeyDown}
+            onPaste={handlePaste}
+            onKeyDown={handleKeyDown}
             className={cn(
               "z-10 w-full grow resize-none rounded-xl border border-input bg-background p-3 pr-24 text-sm ring-offset-background transition-[border] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
               showFileList && "pb-16",
@@ -227,25 +245,22 @@ export function MessageInput({
             <div className="absolute inset-x-3 bottom-0 z-20 py-3">
               <div className="flex space-x-3">
                 <AnimatePresence mode="popLayout">
-                  {props.files?.map((file) => {
-                    return (
-                      <FilePreview
-                        key={file.name + String(file.lastModified)}
-                        file={file}
-                        onRemove={() => {
-                          props.setFiles((files) => {
-                            if (!files) return null;
-
-                            const filtered = Array.from(files).filter(
-                              (f) => f !== file
-                            );
-                            if (filtered.length === 0) return null;
-                            return filtered;
-                          });
-                        }}
-                      />
-                    );
-                  })}
+                  {props.files?.map((file) => (
+                    <FilePreview
+                      key={file.name + String(file.lastModified)}
+                      file={file}
+                      onRemove={() => {
+                        props.setFiles((files) => {
+                          if (!files) return null;
+                          const filtered = Array.from(files).filter(
+                            (f) => f !== file
+                          );
+                          if (filtered.length === 0) return null;
+                          return filtered;
+                        });
+                      }}
+                    />
+                  ))}
                 </AnimatePresence>
               </div>
             </div>
@@ -316,157 +331,5 @@ export function MessageInput({
     </div>
   );
 }
+
 MessageInput.displayName = "MessageInput";
-
-interface FileUploadOverlayProps {
-  isDragging: boolean;
-}
-
-function FileUploadOverlay({ isDragging }: FileUploadOverlayProps) {
-  return (
-    <AnimatePresence>
-      {isDragging && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center space-x-2 rounded-xl border border-dashed border-border bg-background text-sm text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          aria-hidden
-        >
-          <Paperclip className="h-4 w-4" />
-          <span>Drop your files here to attach them.</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-function showFileUploadDialog() {
-  const input = document.createElement("input");
-
-  input.type = "file";
-  input.multiple = true;
-  input.accept = "*/*";
-  input.click();
-
-  return new Promise<File[] | null>((resolve) => {
-    input.onchange = (e) => {
-      const files = (e.currentTarget as HTMLInputElement).files;
-
-      if (files) {
-        resolve(Array.from(files));
-        return;
-      }
-
-      resolve(null);
-    };
-  });
-}
-
-function TranscribingOverlay() {
-  return (
-    <motion.div
-      className="flex h-full w-full flex-col items-center justify-center rounded-xl bg-background/80 backdrop-blur-sm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
-      <div className="relative">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <motion.div
-          className="absolute inset-0 h-8 w-8 animate-pulse rounded-full bg-primary/20"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1.2, opacity: 1 }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-      <p className="mt-4 text-sm font-medium text-muted-foreground">
-        Transcribing audio...
-      </p>
-    </motion.div>
-  );
-}
-
-interface RecordingPromptProps {
-  isVisible: boolean;
-  onStopRecording: () => void;
-}
-
-function RecordingPrompt({ isVisible, onStopRecording }: RecordingPromptProps) {
-  return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ top: 0, filter: "blur(5px)" }}
-          animate={{
-            top: -40,
-            filter: "blur(0px)",
-            transition: {
-              type: "spring",
-              filter: { type: "tween" },
-            },
-          }}
-          exit={{ top: 0, filter: "blur(5px)" }}
-          className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer overflow-hidden whitespace-nowrap rounded-full border bg-background py-1 text-center text-sm text-muted-foreground"
-          onClick={onStopRecording}
-        >
-          <span className="mx-2.5 flex items-center">
-            <Info className="mr-2 h-3 w-3" />
-            Click to finish recording
-          </span>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-interface RecordingControlsProps {
-  isRecording: boolean;
-  isTranscribing: boolean;
-  audioStream: MediaStream | null;
-  textAreaHeight: number;
-  onStopRecording: () => void;
-}
-
-function RecordingControls({
-  isRecording,
-  isTranscribing,
-  audioStream,
-  textAreaHeight,
-  onStopRecording,
-}: RecordingControlsProps) {
-  if (isRecording) {
-    return (
-      <div
-        className="absolute inset-[1px] z-50 overflow-hidden rounded-xl"
-        style={{ height: textAreaHeight - 2 }}
-      >
-        <AudioVisualizer
-          stream={audioStream}
-          isRecording={isRecording}
-          onClick={onStopRecording}
-        />
-      </div>
-    );
-  }
-
-  if (isTranscribing) {
-    return (
-      <div
-        className="absolute inset-[1px] z-50 overflow-hidden rounded-xl"
-        style={{ height: textAreaHeight - 2 }}
-      >
-        <TranscribingOverlay />
-      </div>
-    );
-  }
-
-  return null;
-}

@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText, Output } from "ai";
+import { streamText, Output, stepCountIs, convertToModelMessages } from "ai";
 import { devTools } from "../tools";
 import { z } from "zod";
 
@@ -56,9 +56,11 @@ IMPORTANT RESPONSIVE DESIGN REQUIREMENTS:
 - Make navigation and interactive elements accessible on touch devices
 
 6. Your response must be the complete HTML code in a structured format, with no extra commentary or explanation.
+
+Current Date and Time: ${new Date().toISOString()}
 `,
-      messages,
-      maxSteps: 100,
+      messages: convertToModelMessages(messages),
+      stopWhen: stepCountIs(100),
       tools: devTools,
       abortSignal: req.signal, // Add abort signal for proper cancellation
       experimental_output: Output.object({
@@ -66,9 +68,9 @@ IMPORTANT RESPONSIVE DESIGN REQUIREMENTS:
       }),
     });
 
-    return result.toDataStreamResponse({
-      getErrorMessage: errorHandler,
-      sendReasoning: true,
+    return result.toUIMessageStreamResponse({
+      onError: errorHandler,
+      sendSources: true,
     });
   } catch (error) {
     console.error("Dev API error:", error);

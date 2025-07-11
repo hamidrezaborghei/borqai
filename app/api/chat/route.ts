@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { stepCountIs, streamText, convertToModelMessages } from "ai";
 import { chatTools } from "../tools";
 
 // Allow streaming responses up to 30 seconds
@@ -43,16 +43,19 @@ export async function POST(req: Request) {
            Use the getCurrentDateTime tool to get the current time and date for any time-sensitive operations or responses.
          - If the user has explicitly defined a specific time or date in their prompt, use that specified time or date for your response.
          - If time or date context is needed but not explicitly defined by the user, always default to using the current date and time by calling the getCurrentDateTime tool.
-         - Always ensure you have the current time and date context when responding to time-sensitive queries or when temporal context is relevant to the user's request.`,
-      messages,
-      maxSteps: 100,
+         - Always ensure you have the current time and date context when responding to time-sensitive queries or when temporal context is relevant to the user's request.
+         
+         Current Date and Time: ${new Date().toISOString()}
+         `,
+      messages: convertToModelMessages(messages),
+      stopWhen: stepCountIs(100),
       tools: chatTools,
       abortSignal: req.signal, // Add abort signal for proper cancellation
     });
 
-    return result.toDataStreamResponse({
-      getErrorMessage: errorHandler,
-      sendReasoning: true,
+    return result.toUIMessageStreamResponse({
+      onError: errorHandler,
+      sendSources: true,
     });
   } catch (error) {
     console.error("Chat API error:", error);
